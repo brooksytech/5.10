@@ -247,7 +247,7 @@ EXPORT_SYMBOL(memcpy)
 
 SYM_FUNC_ALIAS(__pi_memmove, __pi_memcpy)
 
-SYM_FUNC_ALIAS(__memmove, __pi_memmove)
+/*SYM_FUNC_ALIAS(__memmove, __pi_memmove)
 EXPORT_SYMBOL(__memmove)
 SYM_FUNC_ALIAS_WEAK(memmove, __memmove)
-EXPORT_SYMBOL(memmove)
+EXPORT_SYMBOL(memmove)*/
