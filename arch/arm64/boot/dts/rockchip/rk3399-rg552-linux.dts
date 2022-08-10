@@ -55,6 +55,7 @@
 				linux,code = <KEY_VOLUMEDOWN>;
 				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
 			};
+	};
 
 	joypad: rg552-joypad {
 		compatible = "singleadc-joypad";
