@@ -20,6 +20,8 @@
 	model = "Anbernic RG552";
 	compatible = "anbernic,rg552", "rockchip,android", "rockchip,rk3399";
 
+
+
 	aliases {
 		mmc0 = &sdio0;
 		mmc1 = &sdmmc;
@@ -38,8 +40,29 @@
 		reg = <0x0 0xff8d0000 0x0 0x20000>; /* 128k */
 	};
 
+	gpio_keys: volume-keys {
+			compatible = "gpio-keys";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			autorepeat;
+			button@0 {
+				label = "GPIO BTN-VOLUP";
+				linux,code = <KEY_VOLUMEUP>;
+				gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
+			};
+			button@1 {
+				label = "GPIO BTN-VOLDN";
+				linux,code = <KEY_VOLUMEDOWN>;
+				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
+			};
+
 	joypad: rg552-joypad {
 		compatible = "singleadc-joypad";
+
+		pwms = <&pwm3 0 200000000 0>;
+		pwm-names = "enable";
+		rumble-boost-weak = <0x0000>;
+		rumble-boost-strong = <0x0000>;
 
 		joypad-name = "retrogame_joypad";
 		joypad-product = <0x1101>;
@@ -124,83 +147,87 @@
 		sw1 {
 		        gpios = <&gpio3 RK_PA0 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-UP";
-		        linux,code = <103>;
+		        linux,code = <BTN_DPAD_UP>;
 		};
 		sw2 {
 		        gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-DOWN";
-		        linux,code = <108>;
+		        linux,code = <BTN_DPAD_DOWN>;
 		};
 		sw3 {
-                        gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PA3 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-LEFT";
-		        linux,code = <105>;
+		        linux,code = <BTN_DPAD_LEFT>;
 		};
 		sw4 {
-                        gpios = <&gpio3 RK_PA2 GPIO_ACTIVE_LOW>;
+		        gpios = <&gpio3 RK_PA2 GPIO_ACTIVE_LOW>;
 		        label = "GPIO DPAD-RIGHT";
-		        linux,code = <106>;
+		        linux,code = <BTN_DPAD_RIGHT>;
 		};
 		sw5 {
 		        gpios = <&gpio3 RK_PA6 GPIO_ACTIVE_LOW>;
 		        label = "GPIO KEY BTN-A";
-		        linux,code = <304>;
+		        linux,code = <BTN_EAST>;
 		};
 		sw6 {
 		        gpios = <&gpio3 RK_PA7 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN-B";
-		        linux,code = <305>;
+		        linux,code = <BTN_SOUTH>;
 		};
 		sw7 {
-		        gpios = <&gpio3 RK_PA5 GPIO_ACTIVE_LOW>;
-		        label = "GPIO BTN-Y";
-                        linux,code = <308>;
-		};
-                sw8 {
 		        gpios = <&gpio3 RK_PA4 GPIO_ACTIVE_LOW>;
 		        label = "GPIO BTN-X";
-		        linux,code = <307>;
+		        linux,code = <BTN_NORTH>;
+		};
+		sw8 {
+		        gpios = <&gpio3 RK_PA5 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN-Y";
+		        linux,code = <BTN_WEST>;
+		};
+		sw9 {
+		        gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_SELECT";
+		        linux,code = <BTN_SELECT>;
+		};
+		sw10 {
+		        gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_START";
+		        linux,code = <BTN_START>;
 		};
 		sw11 {
-                        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
-                        label = "GPIO F3";
-                        linux,code = <317>;
+		        gpios = <&gpio3 RK_PC0 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_F";
+		        linux,code = <BTN_MODE>;
 		};
 		sw12 {
-                        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
-                        label = "GPIO F4";
-                        linux,code = <318>;
-		};
-
-                sw15 {
 		        gpios = <&gpio3 RK_PD0 GPIO_ACTIVE_LOW>;
-                        label = "GPIO TOP-LEFT";
-		        linux,code = <310>;
+		        label = "GPIO BTN_TL";
+		        linux,code = <BTN_TL>;
 		};
-                sw16 {
+		sw13 {
 		        gpios = <&gpio3 RK_PD2 GPIO_ACTIVE_LOW>;
-                        label = "GPIO TOP-RIGHT";
-		        linux,code = <311>;
+		        label = "GPIO BTN_TR";
+		        linux,code = <BTN_TR>;
 		};
-                sw19 {
-                        gpios = <&gpio3 RK_PB1 GPIO_ACTIVE_LOW>;
-                        label = "GPIO F1";
-                        linux,code = <314>;
+		sw14 {
+		        gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_TL2";
+		        linux,code = <BTN_TL2>;
 		};
-                sw20 {
+		sw15 {
 		        gpios = <&gpio3 RK_PD3 GPIO_ACTIVE_LOW>;
-                        label = "GPIO TOP-RIGHT2";
-		        linux,code = <313>;
+		        label = "GPIO BTN_TR2";
+		        linux,code = <BTN_TR2>;
 		};
-                sw21 {
-                        gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_LOW>;
-                        label = "GPIO TOP-LEFT2";
-                        linux,code = <312>;
+		sw16 {
+		        gpios = <&gpio3 RK_PB3 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_THUMBL";
+		        linux,code = <BTN_THUMBL>;
 		};
-                sw22 {
-                        gpios = <&gpio3 RK_PB0 GPIO_ACTIVE_LOW>;
-                        label = "GPIO F2";
-                        linux,code = <315>;
+		sw17 {
+		        gpios = <&gpio3 RK_PB4 GPIO_ACTIVE_LOW>;
+		        label = "GPIO BTN_THUMBR";
+		        linux,code = <BTN_THUMBR>;
 		};
         };
 
@@ -236,8 +263,26 @@
 		pwms = <&pwm1 0 10000 1>;		
 		#cooling-cells = <2>;
 		cooling-levels = <0 61 102 170 255>;
-	};
+	}; 
 
+	leds: gpio-leds {
+			compatible = "gpio-leds";
+			pinctrl-names = "default";
+			pinctrl-0 =<&leds_gpio>;
+
+			led@1 {
+					gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
+					label = "battery_green";
+					default-state= "on";
+				//	retain-state-suspended;
+			};
+			
+			led@2 {
+					gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
+					label = "battery_red";
+				//	retain-state-suspended;
+			};
+			
 	backlight: backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm0 0 25000 0>;
