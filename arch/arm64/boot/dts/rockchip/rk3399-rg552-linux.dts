@@ -20,22 +20,6 @@
 	model = "Anbernic RG552";
 	compatible = "anbernic,rg552", "rockchip,android", "rockchip,rk3399";
 
-	gpio_keys: volume-keys {
-			compatible = "gpio-keys";
-			#address-cells = <1>;
-			#size-cells = <0>;
-			autorepeat;
-			button@0 {
-				label = "GPIO BTN-VOLUP";
-				linux,code = <KEY_VOLUMEUP>;
-				gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
-			};
-			button@1 {
-				label = "GPIO BTN-VOLDN";
-				linux,code = <KEY_VOLUMEDOWN>;
-				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
-			};
-
 	aliases {
 		mmc0 = &sdio0;
 		mmc1 = &sdmmc;
@@ -1673,3 +1657,4 @@
 	};				
 
 };
+
