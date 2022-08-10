@@ -20,7 +20,21 @@
 	model = "Anbernic RG552";
 	compatible = "anbernic,rg552", "rockchip,android", "rockchip,rk3399";
 
-
+	gpio_keys: volume-keys {
+			compatible = "gpio-keys";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			autorepeat;
+			button@0 {
+				label = "GPIO BTN-VOLUP";
+				linux,code = <KEY_VOLUMEUP>;
+				gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
+			};
+			button@1 {
+				label = "GPIO BTN-VOLDN";
+				linux,code = <KEY_VOLUMEDOWN>;
+				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
+			};
 
 	aliases {
 		mmc0 = &sdio0;
@@ -40,30 +54,8 @@
 		reg = <0x0 0xff8d0000 0x0 0x20000>; /* 128k */
 	};
 
-	gpio_keys: volume-keys {
-			compatible = "gpio-keys";
-			#address-cells = <1>;
-			#size-cells = <0>;
-			autorepeat;
-			button@0 {
-				label = "GPIO BTN-VOLUP";
-				linux,code = <KEY_VOLUMEUP>;
-				gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
-			};
-			button@1 {
-				label = "GPIO BTN-VOLDN";
-				linux,code = <KEY_VOLUMEDOWN>;
-				gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
-			};
-	};
-
 	joypad: rg552-joypad {
 		compatible = "singleadc-joypad";
-
-		pwms = <&pwm3 0 200000000 0>;
-		pwm-names = "enable";
-		rumble-boost-weak = <0x0000>;
-		rumble-boost-strong = <0x0000>;
 
 		joypad-name = "retrogame_joypad";
 		joypad-product = <0x1101>;
@@ -264,26 +256,8 @@
 		pwms = <&pwm1 0 10000 1>;		
 		#cooling-cells = <2>;
 		cooling-levels = <0 61 102 170 255>;
-	}; 
+	};
 
-	leds: gpio-leds {
-			compatible = "gpio-leds";
-			pinctrl-names = "default";
-			pinctrl-0 =<&leds_gpio>;
-
-			led@1 {
-					gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-					label = "battery_green";
-					default-state= "on";
-				//	retain-state-suspended;
-			};
-			
-			led@2 {
-					gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
-					label = "battery_red";
-				//	retain-state-suspended;
-			};
-			
 	backlight: backlight {
 		compatible = "pwm-backlight";
 		pwms = <&pwm0 0 25000 0>;
