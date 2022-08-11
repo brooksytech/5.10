@@ -281,32 +281,44 @@
 		default-brightness-level = <200>;
 	};
 
-	es8316-sound {
+		es8316-sound {
+                status = "okay";
 		compatible = "simple-audio-card";
 		simple-audio-card,format = "i2s";
-		simple-audio-card,name = "rockchip,es8316-codec";
+		simple-audio-card,name = "es8316";
 		simple-audio-card,mclk-fs = <256>;
-
 		simple-audio-card,widgets =
 			"Microphone", "Mic Jack",
-			"Headphone", "Headphones";
+			"Headphone", "Headphone Jack";
 		simple-audio-card,routing =
-			"MIC1", "Mic Jack",
-			"Headphones", "HPOL",
-			"Headphones", "HPOR";
-
+			"Headphone Jack", "HPOL",
+			"Headphone Jack", "HPOR",
+			"Mic Jack", "MIC1";
 		simple-audio-card,cpu {
-            		sound-dai = <&i2s1>;
-			system-clock-frequency = <11289600>;
+			sound-dai = <&i2s1>;
+                        system-clock-frequency = <12288000>;
 		};
-		
 		simple-audio-card,codec {
 			sound-dai = <&es8316>;
-			system-clock-frequency = <11289600>;
+                        system-clock-frequency = <12288000>;
 		};
 	};
 
-	spdif_sound: spdif-sound {
+	hdmi-sound {
+		status = "disabled";
+		compatible = "simple-audio-card";
+		simple-audio-card,format = "i2s";
+		simple-audio-card,mclk-fs = <256>;
+		simple-audio-card,name = "HDMI";
+		simple-audio-card,cpu {
+			sound-dai = <&i2s2>;
+		};
+		simple-audio-card,codec {
+			sound-dai = <&hdmi>;
+		};
+	};
+
+	spdif-sound {
 		status = "disabled";
 		compatible = "simple-audio-card";
 		simple-audio-card,name = "ROCKCHIP,SPDIF";
@@ -319,22 +331,9 @@
 	};
 
 	spdif_out: spdif-out {
-		status = "okay";
 		compatible = "linux,spdif-dit";
 		#sound-dai-cells = <0>;
-	};
-
-	dp_sound: dp-sound {
 		status = "okay";
-		compatible = "rockchip,cdndp-sound";
-		rockchip,cpu = <&spdif>;
-		rockchip,codec = <&cdn_dp 1>;
-	};
-
-	dw_hdmi_audio: dw-hdmi-audio {
-		status = "disabled";
-		compatible = "rockchip,dw-hdmi-audio";
-		#sound-dai-cells = <0>;
 	};
 
 	leds: gpio-leds {
