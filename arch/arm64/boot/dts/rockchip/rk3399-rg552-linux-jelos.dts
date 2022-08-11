@@ -478,22 +478,6 @@
 		status = "okay";
 	};
 
-	wireless-bluetooth {
-		compatible = "bluetooth-platdata";
-		clocks = <&rk808 1>;
-		clock-names = "ext_clock";
-		uart_rts_gpios = <&gpio2 RK_PC3 GPIO_ACTIVE_LOW>;
-		pinctrl-names = "default", "rts_gpio";
-		pinctrl-0 = <&uart0_rts>;
-		pinctrl-1 = <&uart0_gpios>;
-		// wifi-bt-power-toggle;
-		// BT,power_gpio    = <&gpio0 RK_PB5 GPIO_ACTIVE_HIGH>;
-		BT,reset_gpio    = <&gpio0 RK_PB1 GPIO_ACTIVE_HIGH>;
-		BT,wake_gpio     = <&gpio2 RK_PD3 GPIO_ACTIVE_HIGH>;
-		BT,wake_host_irq = <&gpio0 RK_PA4 GPIO_ACTIVE_HIGH>;
-		status = "okay";
-	};
-
 	wireless_wlan: wireless-wlan {
 		compatible = "regulator-fixed";
 		enable-active-high;
@@ -1481,7 +1465,6 @@
 	num-lanes = <4>;
 	max-link-speed = <2>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&pcie_clkreqn>;
 	vpcie12v-supply = <&vcc12v_pcie>;
 	vpcie3v3-supply = <&vcc3v3_pcie>;
 	vpcie1v8-supply = <&vcc1v8_pcie>;
