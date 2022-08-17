@@ -1551,8 +1551,12 @@
 
 	es8316 {
 		hp_det_pin: hp-det-pin {
-			rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_none>;
-		};		
+				rockchip,pins = <0 RK_PB0 RK_FUNC_GPIO &pcfg_pull_up>;
+		};
+
+		spk_en_pin: spk-en-pin {
+			rockchip,pins = <1 RK_PC5 RK_FUNC_GPIO &pcfg_pull_down>;
+		};
 	};
 
 	pmic {
