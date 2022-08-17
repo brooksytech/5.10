@@ -1177,7 +1177,7 @@
 		};
 	};
 
-	cooling_maps {
+	&cooling_maps {
 		map3 {
 			trip = <&threshold>;
 			cooling-device = <&fan0 0 1>;
@@ -1315,59 +1315,81 @@
 
 
 &cluster0_opp {
+	//opp-1512000000 {
+	//	opp-hz = /bits/ 64 <1512000000>;
+	//	opp-microvolt = <1200000 1200000 1250000>;
+	//	opp-microvolt-L0 = <1200000 1200000 1250000>;
+	//	opp-microvolt-L1 = <1175000 1175000 1250000>;
+	//	opp-microvolt-L2 = <1150000 1150000 1250000>;
+	//	opp-microvolt-L3 = <1125000 1125000 1250000>;
+	//	clock-latency-ns = <40000>;
+	//};
 
-	rockchip,bin-scaling-sel = <
-	0	13
-	1       17
-	2       25
-	3       27
-	4       31
-	>;
-		
+	//opp-18000000000 {
+	//	opp-hz = /bits/ 64 <1800000000>;
+	//	opp-microvolt = <1350000>;
+	//	opp-microvolt-L0 = <1350000>;
+	//	opp-microvolt-L1 = <1325000>;
+	//	opp-microvolt-L2 = <1300000>;
+	//	opp-microvolt-L3 = <1275000>;
+	//	clock-latency-ns = <40000>;
+	//};
         opp-1512000000 {
             opp-hz = /bits/ 64 <1512000000>;
-            opp-microvolt = <1150000>;
+            opp-microvolt = <1200000>;
         };
-       opp-1608000000 {
+        opp-1608000000 {
             opp-hz = /bits/ 64 <1608000000>;
-            opp-microvolt = <1125000>;
+            opp-microvolt = <1200000>;
         };
         opp-1704000000 {
             opp-hz = /bits/ 64 <1704000000>;
-            opp-microvolt = <1200000>;
+            opp-microvolt = <1225000>;
         };
 };
-/*
+
 &cluster1_opp {
-		rockchip,bin-scaling-sel = <
-			0	1
-			1	2
-			2	3
-			3	5
-			4	8
-			5	13
-		>;
+	//opp-1992000000 {
+	//	opp-hz = /bits/ 64 <1992000000>;
+	//	opp-microvolt = <1300000 1300000 1300000>;
+	//	opp-microvolt-L0 = <1300000 1300000 1300000>;
+	//	opp-microvolt-L1 = <1275000 1275000 1300000>;
+	//	opp-microvolt-L2 = <1250000 1250000 1300000>;
+	//	opp-microvolt-L3 = <1225000 1225000 1300000>;
+	//	opp-microvolt-L4 = <1225000 1225000 1300000>;
+	//	clock-latency-ns = <40000>;
+	//};
+
+	//opp-2184000000 {
+	//	opp-hz = /bits/ 64 <2184000000>;
+        //        opp-microvolt-L0 = <1350000>;
+        //        opp-microvolt-L1 = <1325000>;
+        //        opp-microvolt-L2 = <1300000>;
+        //        opp-microvolt-L3 = <1275000>;
+	//	clock-latency-ns = <40000>;
+	//};
 	opp-1992000000 {
             opp-hz = /bits/ 64 <1992000000>;
-            opp-microvolt = <1200000>;
+            opp-microvolt = <1250000>;
 	};
         opp-2016000000 {
             opp-hz = /bits/ 64 <2016000000>;
-            opp-microvolt = <1212500>;
+            opp-microvolt = <1250000>;
         };
         opp-2040000000 {
             opp-hz = /bits/ 64 <2040000000>;
-            opp-microvolt = <1225000>;
+            opp-microvolt = <1250000>;
         };
-       opp-2088000000 {
+        opp-2088000000 {
             opp-hz = /bits/ 64 <2088000000>;
             opp-microvolt = <1250000>;
         };
         opp-2184000000 {
             opp-hz = /bits/ 64 <2184000000>;
-            opp-microvolt = <1325000>;
+            opp-microvolt = <1350000>;
         };
 };
+
 */
 
 &dfi {
@@ -1375,37 +1397,32 @@
 };
 
 &dmc {
-	status = "disabled";
-	center-supply = <&vdd_center>;
-	upthreshold = <40>;
-	downdifferential = <20>;
-	system-status-freq = <
-		/*system status         freq(KHz)*/
-		SYS_STATUS_NORMAL       928000
-		SYS_STATUS_REBOOT       856000
-		SYS_STATUS_SUSPEND      328000
-		SYS_STATUS_VIDEO_1080P  666000
-		SYS_STATUS_VIDEO_4K     928000
-		SYS_STATUS_VIDEO_4K_10B 928000
-		SYS_STATUS_PERFORMANCE  928000
-		SYS_STATUS_BOOST        928000
-		SYS_STATUS_DUALVIEW     928000
-		SYS_STATUS_ISP          928000
-	>;
-	vop-bw-dmc-freq = <
-	/* min_bw(MB/s) max_bw(MB/s) freq(KHz) */
-		0       762      416000
-		763     3012     666000
-		3013    99999    928000
-	>;
+        status = "okay";
+        center-supply = <&vdd_center>;
+        upthreshold = <40>;
+        downdifferential = <20>;
+        system-status-freq = <
+                /*system status         freq(KHz)*/
+                SYS_STATUS_NORMAL       666000
+                SYS_STATUS_REBOOT       666000
+                SYS_STATUS_SUSPEND      328000
+                SYS_STATUS_VIDEO_1080P  666000
+                SYS_STATUS_VIDEO_4K     933000
+                SYS_STATUS_VIDEO_4K_10B 933000
+                SYS_STATUS_PERFORMANCE  933000
+                SYS_STATUS_BOOST        933000
+                SYS_STATUS_DUALVIEW     933000
+                SYS_STATUS_ISP          933000
+        >;
+        vop-bw-dmc-freq = <
+        /* min_bw(MB/s) max_bw(MB/s) freq(KHz) */
+                0       762      416000
+                763     3012     666000
+                3013    99999    933000
+        >;
 
-	vop-pn-msch-readlatency = <
-		0	0x20
-		4	0x20
-	>;
-
-	auto-min-freq = <416000>;
-	auto-freq-en = <0>;
+        auto-min-freq = <328000>;
+        auto-freq-en = <0>;
 };
 
 /*TF2/EXT mmcblk0*/
