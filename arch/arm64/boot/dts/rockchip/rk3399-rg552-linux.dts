@@ -839,19 +839,6 @@
 	status = "okay";
 };
 
-&gpio_keys {
-	button@0 {
-		label = "GPIO BTN-VOLUP";
-			linux,code = <115>;
-		gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
-	};
-	button@1 {
-		label = "GPIO BTN-VOLDN";
-			linux,code = <114>;
-		gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
-	};	
-};
-
 &mipi_dsi {
 	status = "okay";
 	
