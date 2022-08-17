@@ -239,6 +239,7 @@
 		cooling-max-state = <3>;
 		#cooling-cells = <2>;
 		cooling-levels = <0 80 170 230>;
+		fan-supply = <&vcc5v0_sys>;
 	}; 
 
 	backlight: backlight {
@@ -280,54 +281,47 @@
 		default-brightness-level = <200>;
 	};
 
-		es8316-sound {
-                status = "okay";
+	es8316-sound {
 		compatible = "simple-audio-card";
+		pinctrl-names = "default";
+		pinctrl-0 = <&hp_det_pin>;
+		simple-audio-card,name = "rockchip,es8316-codec";
 		simple-audio-card,format = "i2s";
-		simple-audio-card,name = "es8316";
 		simple-audio-card,mclk-fs = <256>;
+
 		simple-audio-card,widgets =
-			"Microphone", "Mic Jack",
-			"Headphone", "Headphone Jack";
+			"Headphone", "Headphones",
+			"Speaker", "Speaker";
 		simple-audio-card,routing =
-			"Headphone Jack", "HPOL",
-			"Headphone Jack", "HPOR",
-			"Mic Jack", "MIC1";
+			"Headphones", "HPOL",
+			"Headphones", "HPOR",
+			"Speaker Amplifier INL", "HPOL",
+			"Speaker Amplifier INR", "HPOR",
+			"Speaker", "Speaker Amplifier OUTL",
+			"Speaker", "Speaker Amplifier OUTR";
+
+		simple-audio-card,hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
+		simple-audio-card,aux-devs = <&speaker_amp>;
+		simple-audio-card,pin-switches = "Speaker";
+
 		simple-audio-card,cpu {
 			sound-dai = <&i2s1>;
-                        system-clock-frequency = <12288000>;
 		};
+
 		simple-audio-card,codec {
 			sound-dai = <&es8316>;
-                        system-clock-frequency = <12288000>;
 		};
 	};
 
-	hdmi-sound {
-		status = "disabled";
-		compatible = "simple-audio-card";
-		simple-audio-card,format = "i2s";
-		simple-audio-card,mclk-fs = <256>;
-		simple-audio-card,name = "HDMI";
-		simple-audio-card,cpu {
-			sound-dai = <&i2s2>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&hdmi>;
-		};
+	speaker_amp: speaker-amplifier {
+		compatible = "simple-audio-amplifier";
+		pinctrl-names = "default";
+		pinctrl-0 = <&spk_en_pin>;
+		enable-gpios = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
+		sound-name-prefix = "Speaker Amplifier";
+		VCC-supply = <&vcc5v0_sys>;
 	};
 
-	spdif-sound {
-		status = "disabled";
-		compatible = "simple-audio-card";
-		simple-audio-card,name = "ROCKCHIP,SPDIF";
-		simple-audio-card,cpu {
-			sound-dai = <&spdif>;
-		};
-		simple-audio-card,codec {
-			sound-dai = <&spdif_out>;
-		};
-	};
 
 	spdif_out: spdif-out {
 		compatible = "linux,spdif-dit";
@@ -874,20 +868,17 @@
 };
 
 &i2c1 {
+	clock-frequency = <100000>;
+	i2c-scl-rising-time-ns = <300>;
+	i2c-scl-falling-time-ns = <15>;
 	status = "okay";
-	i2c-scl-rising-time-ns = <168>;
-	i2c-scl-falling-time-ns = <4>;
 
 	es8316: es8316@11 {
-		#sound-dai-cells = <0>;
 		compatible = "everest,es8316";
 		reg = <0x11>;
 		clocks = <&cru SCLK_I2S_8CH_OUT>;
 		clock-names = "mclk";
-		pinctrl-names = "default";
-		pinctrl-0 = <&i2s_8ch_mclk>;
-		hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
-		spk-con-gpio = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
+		#sound-dai-cells = <0>;
 	};
 };
 
@@ -1390,6 +1381,7 @@
         };
 };
 
+*/
 
 &dfi {
 	status = "okay";
