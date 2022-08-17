@@ -821,6 +821,19 @@
 	status = "okay";
 };
 
+&gpio_keys {
+		button@0 {
+			label = "GPIO BTN-VOLUP";
+			linux,code = <KEY_VOLUMEUP>;
+			gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
+		};
+		button@1 {
+			label = "GPIO BTN-VOLDN";
+			linux,code = <KEY_VOLUMEDOWN>;
+			gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
+		};
+};
+
 &mipi_dsi {
 	status = "okay";
 	
@@ -835,22 +848,6 @@
 			};
 		};
 	};
-
-&gpio_keys {
-		autorepeat;
-		button@0 {
-			label = "GPIO BTN-VOLUP";
-			linux,code = <KEY_VOLUMEUP>;
-			gpios = <&gpio3 RK_PB5 GPIO_ACTIVE_LOW>;
-		};
-		button@1 {
-			label = "GPIO BTN-VOLDN";
-			linux,code = <KEY_VOLUMEDOWN>;
-			gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
-		};
-};
-
-
 
 	dsi_panel: panel@0 {
 		reg = <0>;
@@ -1659,4 +1656,3 @@
 	};				
 
 };
-
