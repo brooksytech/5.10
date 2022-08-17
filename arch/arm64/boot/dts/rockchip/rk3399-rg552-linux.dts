@@ -836,10 +836,7 @@
 		};
 	};
 
-&gpio_keys: volume-keys {
-		compatible = "gpio-keys";
-		#address-cells = <1>;
-		#size-cells = <0>;
+&gpio_keys {
 		autorepeat;
 		button@0 {
 			label = "GPIO BTN-VOLUP";
@@ -851,7 +848,6 @@
 			linux,code = <KEY_VOLUMEDOWN>;
 			gpios = <&gpio3 RK_PB6 GPIO_ACTIVE_LOW>;
 		};
-
 };
 
 
