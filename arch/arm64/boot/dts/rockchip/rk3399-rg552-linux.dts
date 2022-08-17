@@ -876,9 +876,8 @@
 
 &i2c1 {
 	status = "okay";
-	clock-frequency = <100000>; ///	clock-frequency = <200000>;
-	i2c-scl-rising-time-ns = <300>;
-	i2c-scl-falling-time-ns = <15>;
+	i2c-scl-rising-time-ns = <168>;
+	i2c-scl-falling-time-ns = <4>;
 
 	es8316: es8316@11 {
 		#sound-dai-cells = <0>;
@@ -886,9 +885,13 @@
 		reg = <0x11>;
 		clocks = <&cru SCLK_I2S_8CH_OUT>;
 		clock-names = "mclk";
-		extcon = <&rk_headset>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2s_8ch_mclk>;
+		hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
+		spk-con-gpio = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
 	};
 };
+
 
 &i2c4 {
 	clock-frequency = <400000>;
@@ -1000,19 +1003,16 @@
 };
 
 &i2s1 {
-	assigned-clocks = <&cru SCLK_I2SOUT_SRC>;
-	assigned-clock-parents = <&cru SCLK_I2S1_8CH>;
-	rockchip,i2s-broken-burst-len;
-	pinctrl-names = "default";	
-	pinctrl-0 = <&i2s_8ch_mclk>, <&i2s1_2ch_bus>;	
-	rockchip,capture-channels = <2>;
-	rockchip,playback-channels = <2>;
-	#sound-dai-cells = <0>;	
 	status = "okay";
+	rockchip,i2s-broken-burst-len;
+	rockchip,playback-channels = <8>;
+	rockchip,capture-channels = <8>;
+	#sound-dai-cells = <0>;
 };
 
 &i2s2 {
 	#sound-dai-cells = <0>;
+	rockchip,bclk-fs = <128>;
 	status = "okay";
 };
 /*
