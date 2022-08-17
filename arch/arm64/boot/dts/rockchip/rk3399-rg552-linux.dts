@@ -1177,7 +1177,7 @@
 		};
 	};
 
-	&cooling_maps {
+	cooling_maps {
 		map3 {
 			trip = <&threshold>;
 			cooling-device = <&fan0 0 1>;
