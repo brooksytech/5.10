@@ -234,13 +234,12 @@
 
 	fan0: pwm-fan {
 		compatible = "pwm-fan";
+		pwms = <&pwm1 0 10000 1>;
 		cooling-min-state = <0>;
-		cooling-max-state = <4>;
-		fan-supply = <&vcc5v0_sys>;				
-		pwms = <&pwm1 0 10000 1>;		
+		cooling-max-state = <3>;
 		#cooling-cells = <2>;
-		cooling-levels = <0 61 102 170 255>;
-	};
+		cooling-levels = <0 80 170 230>;
+	}; 
 
 	backlight: backlight {
 		compatible = "pwm-backlight";
@@ -1178,77 +1177,24 @@
 		};
 	};
 
-	cooling-maps {
-		/* fan cooling map */
-		map0 {
-			trip = <&cpu_warm>;
-			cooling-device =
-				<&fan0 0 1>;
-		};
-		map1 {
-			trip = <&cpu_alert2>;
-			cooling-device =
-				<&fan0 1 2>;
-		};
-		map2 {
-			trip = <&cpu_alert0>;
-			cooling-device =
-				<&fan0 2 3>;
-		};
+	&cooling_maps {
 		map3 {
-			trip = <&cpu_alert1>;
-			cooling-device =
-				<&fan0 3 4>;
+			trip = <&threshold>;
+			cooling-device = <&fan0 0 1>;
+			contribution = <4096>;
 		};
-		
-		/* cpu cooling map */
-		/* big cluster */
 		map4 {
-			trip = <&cpu_alert3>;
-			cooling-device =
-				<&cpu_b0 0 2>;
+			trip = <&target>;
+			cooling-device = <&fan0 1 2>;
 			contribution = <4096>;
 		};
 		map5 {
-			trip = <&cpu_alert4>;
-			cooling-device =
-				<&cpu_b0 2 4>;
+			trip = <&soc_crit>;
+			cooling-device = <&fan0 2 3>;
 			contribution = <4096>;
-		};
-		map6 {
-			trip = <&cpu_alert5>;
-			cooling-device =
-				<&cpu_b0 4 7>;
-			contribution = <4096>;
-		};
-		map7 {
-			trip = <&cpu_alert6>;
-			cooling-device =
-				<&cpu_b0 4 7>;
-			contribution = <4096>;
-		};
-
-		/* little cluster */
-		map8 {
-			trip = <&cpu_alert7>;
-			cooling-device =
-				<&cpu_l0 0 2>;
-			contribution = <1024>;
-		};
-		map9 {
-			trip = <&cpu_alert8>;
-			cooling-device =
-				<&cpu_l0 2 5>;
-			contribution = <1024>;
-		};
-
-		map10 {
-			trip = <&cpu_alert9>;
-			cooling-device =
-				<&gpu THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-			contribution = <1024>;
 		};
 	};
+
 };
 
 
