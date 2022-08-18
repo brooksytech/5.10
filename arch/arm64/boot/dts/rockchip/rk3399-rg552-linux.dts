@@ -640,13 +640,13 @@
 	i2c-scl-falling-time-ns = <4>;
 	status = "okay";
 
-	rk808: pmic@1b {
+rk808: pmic@1b {
 		compatible = "rockchip,rk808";
 		reg = <0x1b>;
 		interrupt-parent = <&gpio3>;
 		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
 		#clock-cells = <1>;
-		clock-output-names = "xin32k", "rk808-clkout2";
+		clock-output-names = "rk808-clkout1", "rk808-clkout2";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pmic_int_l>;
 		rockchip,system-power-controller;
@@ -662,8 +662,8 @@
 		vcc9-supply = <&vcc5v0_sys>;
 		vcc10-supply = <&vcc5v0_sys>;
 		vcc11-supply = <&vcc5v0_sys>;
-		vcc12-supply = <&vcc3v3_sys>;
-		vddio-supply = <&vcca_1v8>;
+		vcc12-supply = <&vcc3v3_sys>;			
+		vddio-supply = <&vcc_3v0>;
 
 		rtc {
 			status = "okay";
