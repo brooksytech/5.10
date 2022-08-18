@@ -25,6 +25,11 @@
 #define DSI_CMD2_BK0_LNESET		0xC0 /* Display Line setting */
 #define DSI_CMD2_BK0_PORCTRL		0xC1 /* Porch control */
 #define DSI_CMD2_BK0_INVSEL		0xC2 /* Inversion selection, Frame Rate Control */
+#define DSI_CMD2_BK0_SECTRL1		0xE0 /* Sunlight Readable Enhancement */
+#define DSI_CMD2_BK0_NRCTRL		0xE1 /* Noise Reduce Control */
+#define DSI_CMD2_BK0_SECTRL2		0xE2 /* Sharpness Control */
+#define DSI_CMD2_BK0_CCCTRL		0xE3 /* Color Calibration Control */
+#define DSI_CMD2_BK0_SKCTRL		0xE4 /* Skin Tone Preservation Control */
 
 /* Command2, BK1 commands */
 #define DSI_CMD2_BK1_VRHS		0xB0 /* Vop amplitude setting */
@@ -38,7 +43,7 @@
 #define DSI_CMD2_BK1_SPD2		0xC2 /* Source EQ2 Setting */
 #define DSI_CMD2_BK1_MIPISET1		0xD0 /* MIPI Setting 1 */
 
-/**
+/*
  * Command2 with BK function selection.
  *
  * BIT[4, 0]: [CN2, BKXSEL]
@@ -86,6 +91,8 @@
 #define DSI_MIPISET1_EOT_EN		BIT(3)
 #define DSI_CMD2_BK1_MIPISET1_SET	(BIT(7) | DSI_MIPISET1_EOT_EN)
 
+struct st7701;
+
 struct st7701_panel_desc {
 	const struct drm_display_mode *mode;
 	unsigned int lanes;
@@ -94,6 +101,8 @@ struct st7701_panel_desc {
 	const char *const *supply_names;
 	unsigned int num_supplies;
 	unsigned int panel_sleep_delay;
+	void (*init_sequence)(struct st7701 *st7701);
+	unsigned int reset_level;
 };
 
 struct st7701 {
@@ -104,6 +113,7 @@ struct st7701 {
 	struct regulator_bulk_data *supplies;
 	struct gpio_desc *reset;
 	unsigned int sleep_delay;
+	enum drm_panel_orientation orientation;
 };
 
 static inline struct st7701 *panel_to_st7701(struct drm_panel *panel)
@@ -123,7 +133,7 @@ static inline int st7701_dsi_write(struct st7701 *st7701, const void *seq,
 		st7701_dsi_write(st7701, d, ARRAY_SIZE(d));	\
 	}
 
-static void st7701_init_sequence(struct st7701 *st7701)
+static void ts8550b_init_sequence(struct st7701 *st7701)
 {
 	const struct drm_display_mode *mode = st7701->desc->mode;
 
@@ -194,12 +204,81 @@ static void st7701_init_sequence(struct st7701 *st7701)
 		   0x77, 0x01, 0x00, 0x00, DSI_CMD2BKX_SEL_NONE);
 }
 
+static void kd50t048a_init_sequence(struct st7701 *st7701)
+{
+	ST7701_DSI(st7701, MIPI_DCS_SOFT_RESET, 0x00);
+
+	/* We need to wait 5ms before sending new commands */
+	usleep_range(5000, 10000);
+
+	ST7701_DSI(st7701, MIPI_DCS_EXIT_SLEEP_MODE, 0x00);
+
+	msleep(st7701->sleep_delay);
+
+	ST7701_DSI(st7701, DSI_CMD2BKX_SEL,
+		   0x77, 0x01, 0x00, 0x00, DSI_CMD2BK0_SEL);
+	/* Command2, BK0 */
+	ST7701_DSI(st7701, DSI_CMD2_BK0_PVGAMCTRL, 0x00, 0x0D, 0x14, 0x0D,
+		   0x10, 0x05, 0x02, 0x08, 0x08, 0x1E, 0x05, 0x13, 0x11,
+		   0xA3, 0x29, 0x18);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_NVGAMCTRL, 0x00, 0x0C, 0x14, 0x0C,
+		   0x10, 0x05, 0x03, 0x08, 0x07, 0x20, 0x05, 0x13, 0x11,
+		   0xA4, 0x29, 0x18);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_LNESET, 0xE9, 0x03);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_PORCTRL, 0x11, 0x02);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_INVSEL, 0x31, 0x08);
+
+	/* Command2, BK1 */
+	ST7701_DSI(st7701, DSI_CMD2BKX_SEL, 0x77, 0x01, 0x00, 0x00, DSI_CMD2BK1_SEL);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_VRHS, 0x6C);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_VCOM, 0x43);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_VGHSS, 0x07);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_TESTCMD, 0x80);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_VGLS, 0x47);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_PWCTLR1, 0x85);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_PWCTLR2, 0x20);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_SPD1, 0x78);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_SPD2, 0x78);
+	ST7701_DSI(st7701, DSI_CMD2_BK1_MIPISET1, 0x88);
+
+	/**
+	 * ST7701_SPEC_V1.2 is unable to provide enough information above this
+	 * specific command sequence, so grab the same from vendor BSP driver.
+	 */
+	ST7701_DSI(st7701, DSI_CMD2_BK0_SECTRL1, 0x00, 0x00, 0x02);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_NRCTRL, 0x08, 0x00, 0x0A, 0x00, 0x07, 0x00, 0x09,
+		   0x00, 0x00, 0x33, 0x33);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_SECTRL2, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		   0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_CCCTRL, 0x00, 0x00, 0x33, 0x33);
+	ST7701_DSI(st7701, DSI_CMD2_BK0_SKCTRL, 0x44, 0x44);
+	ST7701_DSI(st7701, 0xE5, 0x0E, 0x60, 0xA0, 0xA0, 0x10, 0x60, 0xA0,
+		   0xA0, 0x0A, 0x60, 0xA0, 0xA0, 0x0C, 0x60, 0xA0, 0xA0);
+	ST7701_DSI(st7701, 0xE6, 0x00, 0x00, 0x33, 0x33);
+	ST7701_DSI(st7701, 0xE7, 0x44, 0x44);
+	ST7701_DSI(st7701, 0xE8, 0x0D, 0x60, 0xA0, 0xA0, 0x0F, 0x60, 0xA0,
+		   0xA0, 0x09, 0x60, 0xA0, 0xA0, 0x0B, 0x60, 0xA0, 0xA0);
+	ST7701_DSI(st7701, 0xEB, 0x02, 0x01, 0xE4, 0xE4, 0x44, 0x00, 0x40);
+	ST7701_DSI(st7701, 0xEC, 0x02, 0x01);
+	ST7701_DSI(st7701, 0xED, 0xAB, 0x89, 0x76, 0x54, 0x01, 0xFF, 0xFF,
+		   0xFF, 0xFF, 0xFF, 0xFF, 0x10, 0x45, 0x67, 0x98, 0xBA);
+	/* disable Command2 */
+	ST7701_DSI(st7701, DSI_CMD2BKX_SEL,
+		   0x77, 0x01, 0x00, 0x00, DSI_CMD2BKX_SEL_NONE);
+
+	ST7701_DSI(st7701, MIPI_DCS_SET_PIXEL_FORMAT, 0x70);
+	ST7701_DSI(st7701, MIPI_DCS_WRITE_CONTROL_DISPLAY, 0xEC);
+	ST7701_DSI(st7701, MIPI_DCS_WRITE_POWER_SAVE, 0xB3);
+	ST7701_DSI(st7701, MIPI_DCS_SET_CABC_MIN_BRIGHTNESS, 0xFF);
+}
+
+
 static int st7701_prepare(struct drm_panel *panel)
 {
 	struct st7701 *st7701 = panel_to_st7701(panel);
 	int ret;
 
-	gpiod_set_value(st7701->reset, 0);
+	gpiod_set_value(st7701->reset, st7701->desc->reset_level);
 
 	ret = regulator_bulk_enable(st7701->desc->num_supplies,
 				    st7701->supplies);
@@ -207,10 +286,10 @@ static int st7701_prepare(struct drm_panel *panel)
 		return ret;
 	msleep(20);
 
-	gpiod_set_value(st7701->reset, 1);
+	gpiod_set_value(st7701->reset, !st7701->desc->reset_level);
 	msleep(150);
 
-	st7701_init_sequence(st7701);
+	st7701->desc->init_sequence(st7701);
 
 	return 0;
 }
@@ -241,7 +320,7 @@ static int st7701_unprepare(struct drm_panel *panel)
 
 	msleep(st7701->sleep_delay);
 
-	gpiod_set_value(st7701->reset, 0);
+	gpiod_set_value(st7701->reset, st7701->desc->reset_level);
 
 	/**
 	 * During the Resetting period, the display will be blanked
@@ -279,6 +358,8 @@ static int st7701_get_modes(struct drm_panel *panel,
 
 	connector->display_info.width_mm = desc_mode->width_mm;
 	connector->display_info.height_mm = desc_mode->height_mm;
+
+	drm_connector_set_panel_orientation(connector, st7701->orientation);
 
 	return 1;
 }
@@ -323,6 +404,44 @@ static const struct st7701_panel_desc ts8550b_desc = {
 	.supply_names = ts8550b_supply_names,
 	.num_supplies = ARRAY_SIZE(ts8550b_supply_names),
 	.panel_sleep_delay = 80, /* panel need extra 80ms for sleep out cmd */
+	.reset_level = 0,
+	.init_sequence = ts8550b_init_sequence,
+};
+
+static const struct drm_display_mode kd50t048a_mode = {
+	.clock          = 27500,
+
+	.hdisplay       = 480,
+	.hsync_start    = 480 + 2,
+	.hsync_end      = 480 + 2 + 10,
+	.htotal         = 480 + 2 + 10 + 2,
+
+	.vdisplay       = 854,
+	.vsync_start    = 854 + 12,
+	.vsync_end      = 854 + 12 + 2,
+	.vtotal         = 854 + 12 + 2 + 60,
+
+	.width_mm       = 69,
+	.height_mm      = 139,
+
+	.type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+};
+
+static const char * const kd50t048a_supply_names[] = {
+	"VCC",
+	"IOVCC",
+};
+
+static const struct st7701_panel_desc kd50t048a_desc = {
+	.mode = &kd50t048a_mode,
+	.lanes = 2,
+	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_VIDEO_BURST,
+	.format = MIPI_DSI_FMT_RGB888,
+	.supply_names = kd50t048a_supply_names,
+	.num_supplies = ARRAY_SIZE(kd50t048a_supply_names),
+	.panel_sleep_delay = 0,
+	.reset_level = 1, /* reset is inverted compared to ts8550b */
+	.init_sequence = kd50t048a_init_sequence,
 };
 
 static int st7701_dsi_probe(struct mipi_dsi_device *dsi)
@@ -380,6 +499,12 @@ static int st7701_dsi_probe(struct mipi_dsi_device *dsi)
 
 	drm_panel_add(&st7701->panel);
 
+	ret = of_drm_get_panel_orientation(dsi->dev.of_node, &st7701->orientation);
+	if (ret < 0) {
+		dev_err(&dsi->dev, "%pOF: failed to get orientation %d\n", &dsi->dev.of_node, ret);
+		return ret;
+	}
+
 	mipi_dsi_set_drvdata(dsi, st7701);
 	st7701->dsi = dsi;
 	st7701->desc = desc;
@@ -399,6 +524,7 @@ static int st7701_dsi_remove(struct mipi_dsi_device *dsi)
 
 static const struct of_device_id st7701_of_match[] = {
 	{ .compatible = "techstar,ts8550b", .data = &ts8550b_desc },
+	{ .compatible = "elida,kd50t048a", .data = &kd50t048a_desc },
 	{ }
 };
 MODULE_DEVICE_TABLE(of, st7701_of_match);
