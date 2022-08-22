@@ -310,6 +310,7 @@
 
 		simple-audio-card,codec {
 			sound-dai = <&es8316>;
+                        system-clock-frequency = <12288000>;
 		};
 	};
 
@@ -814,7 +815,9 @@
 	status = "okay";
 };
 
-&gpio_keys {
+&gpio_keys: volume-keys {
+			compatible = "gpio-keys";
+			autorepeat;
 		button@0 {
 			label = "GPIO BTN-VOLUP";
 			linux,code = <KEY_VOLUMEUP>;
