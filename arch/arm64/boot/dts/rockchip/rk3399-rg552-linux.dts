@@ -306,8 +306,8 @@
 
 		simple-audio-card,cpu {
 			sound-dai = <&i2s1>;
+                        system-clock-frequency = <12288000>;
 		};
-
 		simple-audio-card,codec {
 			sound-dai = <&es8316>;
                         system-clock-frequency = <12288000>;
@@ -815,9 +815,7 @@
 	status = "okay";
 };
 
-&gpio_keys: volume-keys {
-			compatible = "gpio-keys";
-			autorepeat;
+&gpio_keys {
 		button@0 {
 			label = "GPIO BTN-VOLUP";
 			linux,code = <KEY_VOLUMEUP>;
