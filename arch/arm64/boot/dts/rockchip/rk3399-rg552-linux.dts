@@ -1123,6 +1123,14 @@ volume-keys {
  	};
  };
 
+&tcphy0_usb3 {
+	port {
+		tcphy0_typec_ss: endpoint {
+			remote-endpoint = <&usbc_ss>;
+		};
+	};
+};
+
 &tcphy0 {
 	status = "okay";
 };
