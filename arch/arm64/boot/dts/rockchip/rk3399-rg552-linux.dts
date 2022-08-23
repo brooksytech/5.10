@@ -14,7 +14,7 @@
 #include <dt-bindings/pwm/pwm.h>
 #include "rk3399.dtsi"
 #include "rk3399-android.dtsi"
-#include "rk3399-opp.dtsi"
+#include "rk3399-opp-jelos.dtsi"
 
 / {
 	model = "Anbernic RG552";
