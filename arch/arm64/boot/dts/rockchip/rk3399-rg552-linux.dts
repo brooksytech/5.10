@@ -332,20 +332,19 @@
 
 	leds: gpio-leds {
 			compatible = "gpio-leds";
-			//pinctrl-names = "default";
-			//pinctrl-0 =<&leds_gpio>;
+			pinctrl-names = "default";
+			pinctrl-0 =<&leds_gpio>;
 
 			led@1 {
 					gpios = <&gpio1 RK_PC4 GPIO_ACTIVE_HIGH>;
-					label = "green";
-					default-state= "off";
+					label = "battery_green";
+					default-state= "on";
 				//	retain-state-suspended;
 			};
 			
 			led@2 {
 					gpios = <&gpio3 RK_PD5 GPIO_ACTIVE_HIGH>;
-					label = "red";
-					default-state= "off";
+					label = "battery_red";
 				//	retain-state-suspended;
 			};
 			
