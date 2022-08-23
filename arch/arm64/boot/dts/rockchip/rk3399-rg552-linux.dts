@@ -1598,6 +1598,14 @@
 		};
 	};
 
+	gpio-leds {
+		leds_gpio: leds-gpio {
+					rockchip,pins =
+							<1 RK_PC4 RK_FUNC_GPIO &pcfg_pull_up>,
+							<3 RK_PD5 RK_FUNC_GPIO &pcfg_pull_up>;
+			};
+	};
+
 	lcd-panel {
 		lcd_reset_gpio: lcd-reset-gpio {
 			rockchip,pins = <0 RK_PB2 RK_FUNC_GPIO &pcfg_pull_none>;
