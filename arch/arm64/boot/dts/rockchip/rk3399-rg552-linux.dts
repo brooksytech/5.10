@@ -281,28 +281,18 @@
 	};
 
 	es8316-sound {
+                status = "okay";
 		compatible = "simple-audio-card";
-		pinctrl-names = "default";
-		pinctrl-0 = <&hp_det_pin>;
-		simple-audio-card,name = "rockchip,es8316-codec";
 		simple-audio-card,format = "i2s";
+		simple-audio-card,name = "es8316";
 		simple-audio-card,mclk-fs = <256>;
-
 		simple-audio-card,widgets =
-			"Headphone", "Headphones",
-			"Speaker", "Speaker";
+			"Microphone", "Mic Jack",
+			"Headphone", "Headphone Jack";
 		simple-audio-card,routing =
-			"Headphones", "HPOL",
-			"Headphones", "HPOR",
-			"Speaker Amplifier INL", "HPOL",
-			"Speaker Amplifier INR", "HPOR",
-			"Speaker", "Speaker Amplifier OUTL",
-			"Speaker", "Speaker Amplifier OUTR";
-
-		simple-audio-card,hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
-		simple-audio-card,aux-devs = <&speaker_amp>;
-		simple-audio-card,pin-switches = "Speaker";
-
+			"Headphone Jack", "HPOL",
+			"Headphone Jack", "HPOR",
+			"Mic Jack", "MIC1";
 		simple-audio-card,cpu {
 			sound-dai = <&i2s1>;
                         system-clock-frequency = <12288000>;
