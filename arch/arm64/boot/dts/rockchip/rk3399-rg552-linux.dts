@@ -314,14 +314,14 @@
 		};
 	};
 
-	speaker_amp: speaker-amplifier {
-		compatible = "simple-audio-amplifier";
-		pinctrl-names = "default";
-		pinctrl-0 = <&spk_en_pin>;
-		enable-gpios = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
-		sound-name-prefix = "Speaker Amplifier";
-		VCC-supply = <&vcc5v0_sys>;
-	};
+	#speaker_amp: speaker-amplifier {
+	#	compatible = "simple-audio-amplifier";
+	#	pinctrl-names = "default";
+	#	pinctrl-0 = <&spk_en_pin>;
+	#	enable-gpios = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
+	#	sound-name-prefix = "Speaker Amplifier";
+	#	VCC-supply = <&vcc5v0_sys>;
+	#};
 
 
 	spdif_out: spdif-out {
@@ -868,17 +868,20 @@
 };
 
 &i2c1 {
-	clock-frequency = <100000>;
-	i2c-scl-rising-time-ns = <300>;
-	i2c-scl-falling-time-ns = <15>;
 	status = "okay";
+	i2c-scl-rising-time-ns = <168>;
+	i2c-scl-falling-time-ns = <4>;
 
 	es8316: es8316@11 {
+		#sound-dai-cells = <0>;
 		compatible = "everest,es8316";
 		reg = <0x11>;
 		clocks = <&cru SCLK_I2S_8CH_OUT>;
 		clock-names = "mclk";
-		#sound-dai-cells = <0>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&i2s_8ch_mclk>;
+		hp-det-gpio = <&gpio0 RK_PB0 GPIO_ACTIVE_HIGH>;
+		spk-con-gpio = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
 	};
 };
 
