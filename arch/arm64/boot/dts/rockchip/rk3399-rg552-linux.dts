@@ -239,7 +239,7 @@
 		cooling-max-state = <3>;
 		#cooling-cells = <2>;
 		cooling-levels = <0 80 170 230>;
-		#fan-supply = <&vcc5v0_sys>;
+		fan-supply = <&vcc5v0_sys>;
 	}; 
 
 	backlight: backlight {
