@@ -1106,86 +1106,22 @@
 	status = "okay";
 };
 
-&soc_thermal {
-	polling-delay-passive = <20>; /* milliseconds */
-	polling-delay = <1000>; /* milliseconds */
-	sustainable-power = <1761>; /* milliwatts */
-
-	thermal-sensors = <&tsadc 0>;
-
-	trips {
-		/* fan active thermal point */
-		cpu_warm: cpu_warm {
-			temperature = <50000>; /* millicelsius */
-			hysteresis = <10000>; /* millicelsius */
-			type = "active";
-		};
-				
-		/* fan active thermal point */
-		cpu_alert2: trip-point@2 {
-			temperature = <60000>; /* millicelsius */
-			hysteresis = <10000>; /* millicelsius */
-			type = "active";
-		};
-
-		/* big cluster thermal point */
-		cpu_alert3: trip-point@3 {
-			temperature = <80000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-		cpu_alert4: trip-point@4 {
-			temperature = <82000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-		cpu_alert5: trip-point@5 {
-			temperature = <85000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-		cpu_alert6: trip-point@6 {
-			temperature = <88000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-
-		/* little cluster thermal point */
-		cpu_alert7: trip-point@7 {
-			temperature = <90000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-		cpu_alert8: trip-point@8 {
-			temperature = <92000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
-		cpu_alert9: trip-point@9 {
-			temperature = <95000>; /* millicelsius */
-			hysteresis = <2000>; /* millicelsius */
-			type = "passive";
-		};
+&cooling_maps {
+	map3 {
+		trip = <&threshold>;
+		cooling-device = <&fan0 0 1>;
+		contribution = <4096>;
 	};
-
-	cooling_maps {
-		map3 {
-			trip = <&threshold>;
-			cooling-device = <&fan0 0 1>;
-			contribution = <4096>;
-		};
-		map4 {
-			trip = <&target>;
-			cooling-device = <&fan0 1 2>;
-			contribution = <4096>;
-		};
-		map5 {
-			trip = <&soc_crit>;
-			cooling-device = <&fan0 2 3>;
-			contribution = <4096>;
-		};
+	map4 {
+		trip = <&target>;
+		cooling-device = <&fan0 1 2>;
+		contribution = <4096>;
 	};
-
+	map5 {
+		trip = <&soc_crit>;
+		cooling-device = <&fan0 2 3>;
+		contribution = <4096>;
+	};
 };
 
 
