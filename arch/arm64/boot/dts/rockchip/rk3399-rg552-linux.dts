@@ -38,7 +38,7 @@
 		reg = <0x0 0xff8d0000 0x0 0x20000>; /* 128k */
 	};
 
-gpio_keys: volume-keys {
+volume-keys {
 			compatible = "gpio-keys";
 			#address-cells = <1>;
 			#size-cells = <0>;
