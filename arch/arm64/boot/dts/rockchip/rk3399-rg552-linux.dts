@@ -239,7 +239,6 @@
 		cooling-max-state = <3>;
 		#cooling-cells = <2>;
 		cooling-levels = <0 80 170 230>;
-		fan-supply = <&vcc5v0_sys>;
 	}; 
 
 	backlight: backlight {
@@ -313,16 +312,6 @@
                         system-clock-frequency = <12288000>;
 		};
 	};
-
-	#speaker_amp: speaker-amplifier {
-	#	compatible = "simple-audio-amplifier";
-	#	pinctrl-names = "default";
-	#	pinctrl-0 = <&spk_en_pin>;
-	#	enable-gpios = <&gpio1 RK_PC5 GPIO_ACTIVE_HIGH>;
-	#	sound-name-prefix = "Speaker Amplifier";
-	#	VCC-supply = <&vcc5v0_sys>;
-	#};
-
 
 	spdif_out: spdif-out {
 		compatible = "linux,spdif-dit";
